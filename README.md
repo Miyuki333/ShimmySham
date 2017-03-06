@@ -65,7 +65,7 @@ extern "C"
 }
 ```
 
-Note the prefix "I_" must be added the name to differentiate from the original function. If you wish to change the prefix used for some reason you can simply edit the macros at the start of the .asm file.
+Note the prefix "I_" must be added to the name of override funtions to differentiate them from the original function. If you wish to change the prefix used for some reason you can simply edit the macros at the start of the .asm file.
 
 If you now do a debug build, you should generate a file called user32.dll. When loaded by an application, this .dll file should open a console window and print a string indicating when GetMessage is called and the first two parameters is was called with. Now you are free to modify those parameters, and see what happens. ;)
 

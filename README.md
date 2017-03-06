@@ -1,12 +1,12 @@
 # ShimmySham
-ShimmySham is a script that can generate source code for shim DLLs automatically. It was orignally based on the article [here](http://www.hulver.com/scoop/story/2006/2/18/125521/185), but
-everything has been completely rewritten in Ruby, updated for 64-bit compatability, and improved for cleanliness and clarity.
+ShimmySham is a script that can generate source code for shim DLLs automatically. It was originally based on the article [here](http://www.hulver.com/scoop/story/2006/2/18/125521/185), but
+everything has been completely rewritten in Ruby, updated for 64-bit compatibility, and improved for cleanliness and clarity.
 
 # Configuration
-This is a standalone script with no dependancies on other gems, however it does require the file "dumpbin.exe" in order to work correctly. This file is included with Microsoft Visual Studio, which you will also need to compile the generated source code. Before using the script, edit the first line so that the DUMPBIN variable points to "dumpbin.exe" in your Visual Studio installation. Additionally, you will need to install an assembler (prefferably nasm) and add it to your path variable to compile the .asm files.
+This is a standalone script with no dependencies on other gems, however it does require the file "dumpbin.exe" in order to work correctly. This file is included with Microsoft Visual Studio, which you will also need to compile the generated source code. Before using the script, edit the first line so that the DUMPBIN variable points to "dumpbin.exe" in your Visual Studio installation. Additionally, you will need to install an assembler (preferably nasm) and add it to your path variable to compile the .asm files.
 
 # Usage
-To generate source files, simply run "ruby shimmysham.rb file.dll". This will produce a .cpp, .asm, and a .def file. To compile these files, first create an empty DLL project and add all the files to the source folder. Then go to Project->Properties->Linker->Input. Change the configuration at the top to "All Configurations" and the platform to "All Platforms", and then enter the name of the of the .def file in the "Module Definition File" field. Now find the .asm file in the solution explorer, right click on it, and open it's properties. Again, change the configuration to "All Configurations" and change the value of the "Item Type" field to "Custom Build Tool". Apply the settings, and open the "Custom Build Tool" page on the left. Depending on whether you want to do a 32-bit build or 64-bit build, change the platform to the apprpriate setting and enter:
+To generate source files, simply run "ruby shimmysham.rb file.dll". This will produce a .cpp, .asm, and a .def file. To compile these files, first create an empty DLL project and add all the files to the source folder. Then go to Project->Properties->Linker->Input. Change the configuration at the top to "All Configurations" and the platform to "All Platforms", and then enter the name of the of the .def file in the "Module Definition File" field. Now find the .asm file in the solution explorer, right click on it, and open it's properties. Again, change the configuration to "All Configurations" and change the value of the "Item Type" field to "Custom Build Tool". Apply the settings, and open the "Custom Build Tool" page on the left. Depending on whether you want to do a 32-bit build or 64-bit build, change the platform to the appropriate setting and enter:
 
 * Command Line (32-bit): `nasm.exe -f win32 -o "$(IntDir)\file.asm.obj" file.asm`
 * Command Line (64-bit): `nasm.exe -f win64 -o "$(IntDir)\file.asm.obj" file.asm`
@@ -30,7 +30,7 @@ shim GetMonitorInfoW
 *snip*
 ```
 
-Note the use of the second argument to the override macro to specify a suffix for the function name. This is only required for 32-bit builds, because Visual C++'s compiler adds a suffix the the function symbols to indicate the number of bytes in the stack frame. @16 should be replaced with a suffix corresponding to the total size in bytes of the arguments to the function. So for example, a function whoose argument types were, byte, short, and long would have the suffix @7 (always use the 32-bit sizes since the suffix is not used in 64-bit builds).
+Note the use of the second argument to the override macro to specify a suffix for the function name. This is only required for 32-bit builds, because Visual C++'s compiler adds a suffix the the function symbols to indicate the number of bytes in the stack frame. @16 should be replaced with a suffix corresponding to the total size in bytes of the arguments to the function. So for example, a function whose argument types were, byte, short, and long would have the suffix @7 (always use the 32-bit sizes since the suffix is not used in 64-bit builds).
 
 Then in a new file called overrides.cpp add:
 
@@ -65,8 +65,8 @@ extern "C"
 }
 ```
 
-Note the prefix "I_" must be added the the name to differentiate from the original function. If you wish to change the prefix used for some reason you can simply edit the macros at the start of the .asm file.
+Note the prefix "I_" must be added the name to differentiate from the original function. If you wish to change the prefix used for some reason you can simply edit the macros at the start of the .asm file.
 
 If you now do a debug build, you should generate a file called user32.dll. When loaded by an application, this .dll file should open a console window and print a string indicating when GetMessage is called and the first two parameters is was called with. Now you are free to modify those parameters, and see what happens. ;)
 
-Note that generally speaking Windows will not allow a process to automatically load a file recognized as a system .dll from it's own folder, so some trickery (modyfying the .exe's import table), or .dll injection may be neccessary.
+Note that generally speaking Windows will not allow a process to automatically load a file recognized as a system .dll from it's own folder, so some trickery (modifying the .exe's import table), or .dll injection may be necessary.

@@ -30,7 +30,7 @@ shim GetMonitorInfoW
 *snip*
 ```
 
-Note the use of the second argument to the override macro to specify a suffix for the function name. This is only required for 32-bit builds, because Visual C++'s compiler adds a suffix the the function symbols to indicate the number of bytes in the stack frame. @16 should be replaced with a suffix corresponding to the total size in bytes of the arguments to the function. So for example, a function whose argument types were, byte, short, and long would have the suffix @7 (always use the 32-bit sizes since the suffix is not used in 64-bit builds).
+Note the use of the second argument of the override macro to specify a suffix for the function name. This is only required for 32-bit builds, because Visual C++'s compiler adds a suffix to the function symbols to indicate the number of bytes in the stack frame. @16 should be replaced with a suffix corresponding to the total size in bytes of the arguments to the function. So for example, a function whose argument types were, byte, short, and long would have the suffix @7 (always use the 32-bit sizes since the suffix is not used in 64-bit builds).
 
 Then in a new file called overrides.cpp add:
 
